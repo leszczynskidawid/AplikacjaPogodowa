@@ -1,0 +1,32 @@
+.main {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+.containerTemperature {
+
+    background-color: rgba(255, 254, 255, 0.4);
+    flex-direction: column;
+    width: 50vh;
+    min-height: 50vh;
+    margin: auto;
+    border-radius: 100%;
+    border: 0.1rem solid black;
+    color: black;
+}
+
+.temperatureTxt {
+    font-size: 4rem;
+    color: white;
+    margin: 10px;
+}
+
+.detailContainer {
+    border-top: 2px solid black;
+    width: 50%;
+    margin: auto;
+}
+
+img {
+    margin-top: 20px;
+}

@@ -1,0 +1,38 @@
+
+header {
+    margin: 50px;
+    text-align: center;
+}
+
+.iputSearch {
+    line-height: 2rem;
+    border: 0.1rem solid white;
+
+
+    width: 50%;
+    border-radius: 0.2rem;
+    padding: 0.2rem;
+    font-size: 1rem;
+}
+.iputSearchError
+{
+    line-height: 2rem;
+    border: 0.1rem solid crimson;
+    width: 50%;
+    border-radius: 0.2rem;
+    padding: 0.2rem;
+    font-size: 1rem;
+}
+
+button {
+    background-color: transparent;
+    border-radius: 0.3rem;
+    border: .1rem solid white;
+    height: 2.5rem;
+    text-transform: uppercase;
+    margin-left: 2rem;
+}
+
+button:hover {
+    border-color: black;
+}
