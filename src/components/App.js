@@ -1,31 +1,34 @@
 import React, { Component} from 'react';
 import HeaderPage from './HeaderPage';
 import ContentComponents from './ContentComponents';
-
-
 import './App.css';
+ //zmienić nazwe zmiennych main => mainDescriptionWeather
+ // zmienić nazwe zmiennej description => longDescriptionWeather
+ // backData => isLocationExists
  
+ const LOCATION_API_BASE_URL = 'https://eu1.locationiq.com/v1/reverse.php';
+ const LOCATION_API_KEY= 'pk.0bbce48c6bbd4d797a24305ea7a2304b';
+
+ //TO SAMO Z DRUGIM API ==> 
 
 class App extends Component {
   state = { 
-    value: '',
-    data: {
+    value: '',//inputvalue
+    data: { //weatherData
       id:"",
-      cityname:"",
+      cityname:"", // cityName
       temperature:"",
-        //details wheter
-            idWeather:"",
             icon: "",
             main: "",
             description: ""
     },
     isValid:true,
-    lon: 0,
-    lat: 0,
+    longitude: 0,
+    latitude: 0,
     backData:false
    } 
    getCityNameByGeoLocation  = async (lat, lon) => 
-   fetch(`https://eu1.locationiq.com/v1/reverse.php?key=pk.0bbce48c6bbd4d797a24305ea7a2304b&lat=${lat}&lon=${lon}&format=json`)
+   fetch(`${LOCATION_API_BASE_URL}?key=${LOCATION_API_KEY}&lat=${lat}&lon=${lon}&format=json`)
      .then(response => {
        if (response.ok) {
          return response;
@@ -33,23 +36,20 @@ class App extends Component {
        throw Error(response.status);
      })
      .then(response => response.json())
-     .then(data => {
-       let city = data.address.village
-       return city
-     })
+     .then(data =>  data.address.village)
      .catch(eror => console.log(eror))
 
- getLocation  = (e) => {
+ getLocation  = () => {
   if(!navigator.geolocation) {
     console.log( 'Geolocation is not supported by your browser');
    } 
    else {
      navigator.geolocation.getCurrentPosition(position => {
-       const lat = position.coords.latitude;
-       const longitude = position.coords.longitude;
+        const {latitude, longitude} = position.coords; 
+    
         this.setState({
-          lon: longitude,
-          lat:lat,
+            longitude,
+            latitude,
           backData: true
         })
      });
@@ -57,14 +57,15 @@ class App extends Component {
  };
 
 
-   componentDidMount  = (e) => {
+   componentDidMount  = () => {
       this.getLocation()
     };
 
-   componentDidUpdate  = (e) => {
-    if( this.state.backData === true) 
+   componentDidUpdate  = () => {
+     const {latitude, longitude, backData} = this.state;  
+    if(backData) 
     {
-      this.getCityNameByGeoLocation(this.state.lat,this.state.lon).then(city => {
+      this.getCityNameByGeoLocation(latitude,longitude).then(city => {
         this.setState({
           value:city,
           backData:false
@@ -74,7 +75,8 @@ class App extends Component {
     }
    };
 
-   handleFetchTheWeather  = (e) => {
+
+   handleFetchTheWeather  = () => {
   
      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${this.state.value}&appid=6c3ebadaa16d7e635a8901841517ee48&units=metric`)
      .then(response => 
@@ -88,7 +90,7 @@ class App extends Component {
         }
         else 
         {
-          this.ValidFunction(response)
+          this.checkApiResponseStatusCode(response)
           this.setState({
             isValid:false,
           })
@@ -104,29 +106,26 @@ class App extends Component {
             cityname: data.name,
             temperature:data.main.temp,
             //szczególy takie jak wiatr
-                idWeather:data.weather[0].id,
+          
                 icon:`http://openweathermap.org/img/wn/${data.weather[0].icon}.png`,
                 main: data.weather[0].main,
                 description: data.weather[0].description,
           }
         })
       })
-      .catch(error => this.ValidFunction(error))
+      .catch(error => this.checkApiResponseStatusCode(error))
    };
-   ValidFunction  = (res) => {
-     console.log(this.state.value)
-      if(res.status ===404)
+   //zmiana nazyw funckcji na bardziej sensowną xd 
+   checkApiResponseStatusCode  = (res) => {
+     const {status} = res;
+      if(status ===404)
       {
         alert("bład servera")
       }
-      else if(res.status=== 400)
+      else if(status=== 400)
       {
         alert("błąd zapytania")
       }
-    
-      this.setState({
-        value: ""
-      })
    };
 
    handleInputChange  = (e) => {
@@ -137,22 +136,18 @@ class App extends Component {
    };
   render() { 
 
-    const {data: {id, cityname, temperature,idWeather, description,main, icon}, value} =   this.state;
+    const {data , value, isValid} =   this.state;
  
 
     return (
    
-
+//zmienic change na => handleChange itp....
+// przekazac data zamiazt temp desc main , icon 
      <>
-      {/* <div>{this.state.value}</div> */}
-      <HeaderPage  isValid ={this.state.isValid} value ={value}
-      change = {this.handleInputChange}click = {this.handleFetchTheWeather} />
-      <ContentComponents id= {id} 
-        name = {cityname}
-        temperature ={temperature}
-        idWeather ={idWeather}
-        description ={description} 
-        main={main} icon={icon} /> 
+      <HeaderPage  isValid ={isValid} value ={value}
+     change = {this.handleInputChange} click = {this.handleFetchTheWeather} />
+      <ContentComponents 
+        data = {data} /> 
   
       </>
     );

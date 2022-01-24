@@ -1,6 +1,7 @@
 import React from 'react';
 import './HeaderPage.css'
-
+// zmienić inputSearch "literówka"
+// w App zmienic nazwe zmiennej isValid => isApiResponseSuccess
 const HeaderPage = (props) => (
    
     <header className='headerPage'>

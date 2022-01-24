@@ -2,13 +2,13 @@ import React from 'react';
 import "./ContentComponents.css"
 
 
-const DetailsWeather = (props) => (
+const DetailsWeather = ({data}) => (
 
    
 
-<div className='detailContainer' key = {props.idWeather}>
-<h2>{props.main}</h2>
-<p>{props.description}</p>
+<div className='detailContainer'> 
+<h2>{data.main}</h2>
+<p>{data.description}</p>
 
 
 </div>
